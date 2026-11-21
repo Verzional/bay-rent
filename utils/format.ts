@@ -64,13 +64,13 @@ export function toIsoDateInput(date: Date | string): string {
 }
 
 export const GARAGE_TYPE_LABELS: Record<GarageType, string> = {
-  BICYCLE: 'Bicycle & Motorcycle Bay',
+  BIKE: 'Bicycle & Motorcycle Bay',
   CAR: 'Standard Car Bay',
   EV: 'EV Charging Bay',
 };
 
 export const GARAGE_TYPE_SHORT_LABELS: Record<GarageType, string> = {
-  BICYCLE: 'Bicycle Bay',
+  BIKE: 'Bike Bay',
   CAR: 'Car Bay',
   EV: 'EV Bay',
 };

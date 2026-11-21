@@ -3,7 +3,7 @@ import { GarageCodeGenerator } from '@/service/garage-code';
 
 describe('GarageCodeGenerator', () => {
   it('generates S###, C###, E### starting at 001 when empty', () => {
-    expect(GarageCodeGenerator.generateNextCodes('BICYCLE', [], 3)).toEqual([
+    expect(GarageCodeGenerator.generateNextCodes('BIKE', [], 3)).toEqual([
       'S001',
       'S002',
       'S003',
@@ -25,6 +25,6 @@ describe('GarageCodeGenerator', () => {
       'E999',
     ]);
     expect(() => GarageCodeGenerator.generateNextCodes('EV', ['E997'], 3)).toThrow();
-    expect(() => GarageCodeGenerator.generateNextCodes('BICYCLE', ['S999'], 1)).toThrow();
+    expect(() => GarageCodeGenerator.generateNextCodes('BIKE', ['S999'], 1)).toThrow();
   });
 });

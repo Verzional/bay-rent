@@ -117,14 +117,14 @@ export function aggregateDailyReport(
 }
 
 /**
- * Aggregates rental volume and revenue grouped by garage bay category (`BICYCLE`, `CAR`, `EV`).
+ * Aggregates rental volume and revenue grouped by garage bay category (`BIKE`, `CAR`, `EV`).
  */
 export function aggregateByGarageType(rentals: RentalDetail[]): GarageTypeReportRow[] {
   const map = new Map<GarageType, GarageTypeReportRow>([
     [
-      'BICYCLE',
+      'BIKE',
       {
-        garageType: 'BICYCLE',
+        garageType: 'BIKE',
         totalRentals: 0,
         activeRentals: 0,
         completedRentals: 0,

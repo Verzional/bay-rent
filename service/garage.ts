@@ -147,13 +147,13 @@ export async function getMaxCodeSequenceByType(): Promise<Record<GarageType, num
   await requireAdmin();
 
   const all = await db.orm.public.Garage.select('garage_code', 'type').all();
-  const byType: Record<GarageType, string[]> = { BICYCLE: [], CAR: [], EV: [] };
+  const byType: Record<GarageType, string[]> = { BIKE: [], CAR: [], EV: [] };
   for (const row of all) {
     byType[row.type].push(row.garage_code);
   }
 
   return {
-    BICYCLE: GarageCodeGenerator.getMaxSequenceNumber('BICYCLE', byType.BICYCLE),
+    BIKE: GarageCodeGenerator.getMaxSequenceNumber('BIKE', byType.BIKE),
     CAR: GarageCodeGenerator.getMaxSequenceNumber('CAR', byType.CAR),
     EV: GarageCodeGenerator.getMaxSequenceNumber('EV', byType.EV),
   };
@@ -165,7 +165,7 @@ export async function getMaxCodeSequenceByType(): Promise<Record<GarageType, num
 export async function getPublicFacilitySummary(): Promise<GarageSummaryByType[]> {
   await syncExpiredRentals();
   const all = await db.orm.public.Garage.all();
-  const types: GarageType[] = ['BICYCLE', 'CAR', 'EV'];
+  const types: GarageType[] = ['BIKE', 'CAR', 'EV'];
 
   return types.map((type) => {
     const matching = all.filter((g) => g.type === type);

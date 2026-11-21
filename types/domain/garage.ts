@@ -1,4 +1,4 @@
-export type GarageType = 'BICYCLE' | 'CAR' | 'EV';
+export type GarageType = 'BIKE' | 'CAR' | 'EV';
 export type GarageStatus = 'AVAILABLE' | 'USED';
 
 export interface GarageItem {

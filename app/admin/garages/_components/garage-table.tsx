@@ -70,7 +70,7 @@ export function GarageTable({ garages }: { garages: GarageItem[] }) {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="ALL">All Types</SelectItem>
-                <SelectItem value="BICYCLE">Bicycle (S###)</SelectItem>
+                <SelectItem value="BIKE">Bike (S###)</SelectItem>
                 <SelectItem value="CAR">Car (C###)</SelectItem>
                 <SelectItem value="EV">EV (E###)</SelectItem>
               </SelectContent>

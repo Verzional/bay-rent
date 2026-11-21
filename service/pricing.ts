@@ -45,6 +45,7 @@ export abstract class BasePricingStrategy {
     dailyRate: number,
     rentalType: RentalType,
     daysCount?: number | null,
+    maxDailyDays = 30,
   ): number {
     if (dailyRate <= 0) {
       throw new Error('Garage daily rate must be greater than zero.');
@@ -59,9 +60,9 @@ export abstract class BasePricingStrategy {
       daysCount === null ||
       !Number.isInteger(daysCount) ||
       daysCount < 1 ||
-      daysCount > 30
+      daysCount > maxDailyDays
     ) {
-      throw new Error('Daily rentals must specify 1 to 30 days.');
+      throw new Error(`Daily rentals must specify 1 to ${maxDailyDays} days.`);
     }
 
     return dailyRate * daysCount;
@@ -108,6 +109,7 @@ export abstract class BasePricingStrategy {
       params.dailyRate,
       params.rentalType,
       params.daysCount,
+      DateCalculator.getMaxDailyDays(params.startDate),
     );
     const chargingCost = this.calculateChargingCost(
       params.vehicleType,
@@ -173,10 +175,10 @@ export abstract class BasePricingStrategy {
 }
 
 /**
- * Pricing & compatibility strategy for Bicycle (`S###`) bays (bicycles & motorcycles).
+ * Pricing & compatibility strategy for Bike (`S###`) bays (bicycles & motorcycles).
  */
-export class BicycleGaragePricing extends BasePricingStrategy {
-  public readonly garageType: GarageType = 'BICYCLE';
+export class BikeGaragePricing extends BasePricingStrategy {
+  public readonly garageType: GarageType = 'BIKE';
   public readonly allowedVehicleTypes: readonly VehicleType[] = ['BICYCLE', 'MOTORCYCLE'];
 }
 
@@ -219,7 +221,7 @@ export class EvGaragePricing extends BasePricingStrategy {
  */
 export class PricingStrategyFactory {
   private static readonly strategies: Record<GarageType, BasePricingStrategy> = {
-    BICYCLE: new BicycleGaragePricing(),
+    BIKE: new BikeGaragePricing(),
     CAR: new CarGaragePricing(),
     EV: new EvGaragePricing(),
   };

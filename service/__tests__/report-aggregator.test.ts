@@ -53,7 +53,7 @@ describe('service/report-aggregator', () => {
     {
       rentalId: 2,
       garageCode: 'S001',
-      garageType: 'BICYCLE',
+      garageType: 'BIKE',
       garageDailyRate: 10_000,
       garageKwhRate: null,
       garageStatus: 'AVAILABLE',
@@ -105,7 +105,7 @@ describe('service/report-aggregator', () => {
 
     const byType = aggregateByGarageType(sampleRentals);
     expect(byType.find((r) => r.garageType === 'EV')?.totalRevenue).toBe(1_200_000);
-    expect(byType.find((r) => r.garageType === 'BICYCLE')?.totalRevenue).toBe(20_000);
+    expect(byType.find((r) => r.garageType === 'BIKE')?.totalRevenue).toBe(20_000);
     expect(byType.find((r) => r.garageType === 'CAR')?.totalRentals).toBe(0);
 
     const byTenant = aggregateByTenant(sampleRentals);

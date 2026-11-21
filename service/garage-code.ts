@@ -1,7 +1,7 @@
 import type { GarageType } from '@/types';
 
 const GARAGE_PREFIX_BY_TYPE: Record<GarageType, string> = {
-  BICYCLE: 'S',
+  BIKE: 'S',
   CAR: 'C',
   EV: 'E',
 };

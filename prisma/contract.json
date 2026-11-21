@@ -46,8 +46,8 @@
             "codecId": "pg/text@1",
             "members": [
               {
-                "name": "BICYCLE",
-                "value": "BICYCLE"
+                "name": "BIKE",
+                "value": "BIKE"
               },
               {
                 "name": "CAR",
@@ -875,8 +875,8 @@
                   "prefix": "Garage_status_check"
                 },
                 {
-                  "expression": "\"type\" IN ('BICYCLE', 'CAR', 'EV')",
-                  "name": "Garage_type_check_bdcd1783",
+                  "expression": "\"type\" IN ('BIKE', 'CAR', 'EV')",
+                  "name": "Garage_type_check_4c7f3097",
                   "prefix": "Garage_type_check"
                 }
               ],
@@ -1462,7 +1462,7 @@
             "GarageType": {
               "kind": "valueSet",
               "values": [
-                "BICYCLE",
+                "BIKE",
                 "CAR",
                 "EV"
               ]
@@ -1511,7 +1511,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "4ea9647a195e46c3e045e6f6e8eff6e738ac12bd60bfd0d261472a6461be7f62"
+    "storageHash": "fa52b9705a9f3f893f03c44b204b3336367369d3dc18a3c1d115325012e31a77"
   },
   "execution": {
     "executionHash": "08d1c643420ae2c89e97a060dd62bc744bd63331f04cbd573a0045243439a660",

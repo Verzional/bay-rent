@@ -4,13 +4,13 @@ import { DateCalculator } from '@/utils/date';
 
 describe('PricingStrategyFactory & OOP Pricing Strategies', () => {
   it('enforces the vehicle-to-garage compatibility matrix', () => {
-    expect(PricingStrategyFactory.getCompatibleGarageTypes('BICYCLE')).toEqual(['BICYCLE']);
-    expect(PricingStrategyFactory.getCompatibleGarageTypes('MOTORCYCLE')).toEqual(['BICYCLE']);
+    expect(PricingStrategyFactory.getCompatibleGarageTypes('BICYCLE')).toEqual(['BIKE']);
+    expect(PricingStrategyFactory.getCompatibleGarageTypes('MOTORCYCLE')).toEqual(['BIKE']);
     expect(PricingStrategyFactory.getCompatibleGarageTypes('CAR')).toEqual(['CAR']);
     expect(PricingStrategyFactory.getCompatibleGarageTypes('EV')).toEqual(['CAR', 'EV']);
 
     expect(() =>
-      PricingStrategyFactory.getStrategy('BICYCLE').assertCompatible('CAR'),
+      PricingStrategyFactory.getStrategy('BIKE').assertCompatible('CAR'),
     ).toThrow();
     expect(() =>
       PricingStrategyFactory.getStrategy('EV').assertCompatible('CAR'),

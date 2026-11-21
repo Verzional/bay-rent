@@ -23,7 +23,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'4ea9647a195e46c3e045e6f6e8eff6e738ac12bd60bfd0d261472a6461be7f62'>;
+  StorageHashBase<'fa52b9705a9f3f893f03c44b204b3336367369d3dc18a3c1d115325012e31a77'>;
 export type ExecutionHash =
   ExecutionHashBase<'08d1c643420ae2c89e97a060dd62bc744bd63331f04cbd573a0045243439a660'>;
 export type ProfileHash =
@@ -284,8 +284,8 @@ type FieldTypeOverrides = {
           readonly input: 'AVAILABLE' | 'USED';
         };
         readonly type: {
-          readonly output: 'BICYCLE' | 'CAR' | 'EV';
-          readonly input: 'BICYCLE' | 'CAR' | 'EV';
+          readonly output: 'BIKE' | 'CAR' | 'EV';
+          readonly input: 'BIKE' | 'CAR' | 'EV';
         };
       };
       readonly Rental: {
@@ -338,8 +338,8 @@ type ColumnTypeOverrides = {
         readonly input: 'AVAILABLE' | 'USED';
       };
       readonly type: {
-        readonly output: 'BICYCLE' | 'CAR' | 'EV';
-        readonly input: 'BICYCLE' | 'CAR' | 'EV';
+        readonly output: 'BIKE' | 'CAR' | 'EV';
+        readonly input: 'BIKE' | 'CAR' | 'EV';
       };
     };
     readonly Rental: {
@@ -917,7 +917,7 @@ type ContractBase = Omit<
             };
             readonly GarageType: {
               readonly kind: 'valueSet';
-              readonly values: readonly ['BICYCLE', 'CAR', 'EV'];
+              readonly values: readonly ['BIKE', 'CAR', 'EV'];
             };
             readonly RentalStatus: {
               readonly kind: 'valueSet';
@@ -1403,7 +1403,7 @@ type ContractBase = Omit<
           readonly GarageType: {
             readonly codecId: 'pg/text@1';
             readonly members: readonly [
-              { readonly name: 'BICYCLE'; readonly value: 'BICYCLE' },
+              { readonly name: 'BIKE'; readonly value: 'BIKE' },
               { readonly name: 'CAR'; readonly value: 'CAR' },
               { readonly name: 'EV'; readonly value: 'EV' },
             ];
@@ -1453,7 +1453,7 @@ type ContractBase = Omit<
             { readonly name: 'USED'; readonly value: 'USED' },
           ];
           readonly GarageType: readonly [
-            { readonly name: 'BICYCLE'; readonly value: 'BICYCLE' },
+            { readonly name: 'BIKE'; readonly value: 'BIKE' },
             { readonly name: 'CAR'; readonly value: 'CAR' },
             { readonly name: 'EV'; readonly value: 'EV' },
           ];

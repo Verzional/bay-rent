@@ -80,7 +80,7 @@ export function BatchCreateGarageDialog({
           <div className="space-y-1.5">
             <Label>Garage Type</Label>
             <div className="grid grid-cols-3 gap-2">
-              {(['BICYCLE', 'CAR', 'EV'] as const).map((t) => (
+              {(['BIKE', 'CAR', 'EV'] as const).map((t) => (
                 <button
                   key={t}
                   type="button"
@@ -92,7 +92,7 @@ export function BatchCreateGarageDialog({
                       : 'border-stone-200 bg-white text-stone-700 hover:bg-stone-50',
                   )}
                 >
-                  {t === 'BICYCLE' ? 'Bicycle (S)' : t === 'CAR' ? 'Car (C)' : 'EV (E)'}
+                  {t === 'BIKE' ? 'Bike (S)' : t === 'CAR' ? 'Car (C)' : 'EV (E)'}
                 </button>
               ))}
             </div>

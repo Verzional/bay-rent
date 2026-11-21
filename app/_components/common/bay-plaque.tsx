@@ -9,13 +9,13 @@ interface BayPlaqueProps {
 }
 
 const TYPE_ACCENT: Record<GarageType, string> = {
-  BICYCLE: 'border-stone-300 bg-stone-100 text-stone-900',
+  BIKE: 'border-stone-300 bg-stone-100 text-stone-900',
   CAR: 'border-amber-300 bg-amber-50 text-amber-950',
   EV: 'border-cyan-300 bg-cyan-50 text-cyan-950',
 };
 
 const TYPE_DOT: Record<GarageType, string> = {
-  BICYCLE: 'bg-stone-500',
+  BIKE: 'bg-stone-500',
   CAR: 'bg-amber-600',
   EV: 'bg-cyan-600',
 };
@@ -25,7 +25,7 @@ const TYPE_DOT: Record<GarageType, string> = {
  */
 export function BayPlaque({ code, type, size = 'md', className }: BayPlaqueProps) {
   const inferredType: GarageType =
-    type ?? (code.startsWith('E') ? 'EV' : code.startsWith('C') ? 'CAR' : 'BICYCLE');
+    type ?? (code.startsWith('E') ? 'EV' : code.startsWith('C') ? 'CAR' : 'BIKE');
 
   const sizeClass =
     size === 'sm'

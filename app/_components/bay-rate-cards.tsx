@@ -6,19 +6,19 @@ import { GARAGE_TYPE_LABELS } from '@/utils/format';
 import type { GarageSummaryByType, GarageType } from '@/types';
 
 const SAMPLE_PLAQUE: Record<GarageType, string> = {
-  BICYCLE: 'S###',
+  BIKE: 'S###',
   CAR: 'C###',
   EV: 'E###',
 };
 
 const TYPE_COMPATIBILITY: Record<GarageType, string> = {
-  BICYCLE: 'Supports Bicycles & Motorcycles',
+  BIKE: 'Supports Bicycles & Motorcycles',
   CAR: 'Supports Cars & EVs (parking only)',
   EV: 'EVs only · Includes full battery charge',
 };
 
 const TYPE_ICON: Record<GarageType, typeof Bike> = {
-  BICYCLE: Bike,
+  BIKE: Bike,
   CAR: CarFront,
   EV: Zap,
 };

@@ -5,7 +5,7 @@ import { z } from 'zod';
  */
 export const batchCreateGarageSchema = z
   .object({
-    type: z.enum(['BICYCLE', 'CAR', 'EV']),
+    type: z.enum(['BIKE', 'CAR', 'EV']),
     quantity: z
       .number()
       .int('Quantity must be a whole number.')
