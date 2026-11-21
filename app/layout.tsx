@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bay-Rent — Vehicle Garage Rental",
+  title: "Bay-Rent | Vehicle Garage Rental",
   description:
     "Architectural vehicle bay and EV garage rental facility with real-time bay allocation, automated billing, and operational reporting.",
 };

@@ -52,37 +52,36 @@ export function FileDropzone({
         />
 
         {previewUrl ? (
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <div className="h-24 w-24 shrink-0 overflow-hidden rounded-lg border border-stone-200 bg-white">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={previewUrl}
-                alt="Payment proof preview"
-                className="h-full w-full object-cover"
-              />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="truncate text-sm font-medium text-stone-900">{fileName}</p>
-              <p className="text-xs text-emerald-700">Ready to submit</p>
-              <div className="mt-2 flex items-center gap-2">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={() => inputRef.current?.click()}
-                >
-                  Change File
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="ghost"
-                  onClick={handleClear}
-                >
-                  <X className="h-3.5 w-3.5" />
-                  Remove
-                </Button>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-stone-200 bg-white">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={previewUrl}
+                  alt="Payment proof preview"
+                  className="h-full w-full object-cover"
+                />
               </div>
+              <p className="truncate text-sm font-medium text-stone-900">{fileName}</p>
+            </div>
+            <div className="flex shrink-0 items-center gap-2">
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => inputRef.current?.click()}
+              >
+                Change
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                onClick={handleClear}
+              >
+                <X className="h-3.5 w-3.5" />
+                Remove
+              </Button>
             </div>
           </div>
         ) : (
