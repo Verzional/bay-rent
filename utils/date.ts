@@ -94,6 +94,18 @@ export class DateCalculator {
   }
 
   /**
+   * Returns the maximum allowed daily rental duration (`daysInMonth - 1`) for `startDate`'s month.
+   * For example: 29 in November (30 days), 27 in non-leap February (28 days), 30 in March (31 days).
+   */
+  public static getMaxDailyDays(startDate: Date): number {
+    const base = DateCalculator.toUtcMidnight(startDate);
+    const daysInMonth = new Date(
+      Date.UTC(base.getUTCFullYear(), base.getUTCMonth() + 1, 0),
+    ).getUTCDate();
+    return daysInMonth - 1;
+  }
+
+  /**
    * Computes the initial rental end date based on `rentalType` and `daysCount`.
    */
   public static calculateInitialEndDate(
@@ -107,14 +119,15 @@ export class DateCalculator {
       return DateCalculator.addCalendarMonths(normalizedStart, 1);
     }
 
+    const maxDays = DateCalculator.getMaxDailyDays(normalizedStart);
     if (
       daysCount === undefined ||
       daysCount === null ||
       !Number.isInteger(daysCount) ||
       daysCount < 1 ||
-      daysCount > 30
+      daysCount > maxDays
     ) {
-      throw new Error('Daily rentals must be between 1 and 30 days.');
+      throw new Error(`Daily rentals must be between 1 and ${maxDays} days for this month.`);
     }
 
     return DateCalculator.addDays(normalizedStart, daysCount);
