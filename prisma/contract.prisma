@@ -1,0 +1,112 @@
+// use prisma-8
+enum UserRole {
+  ADMIN
+  TENANT
+}
+
+enum VerificationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum GarageType {
+  BICYCLE
+  CAR
+  EV
+}
+
+enum GarageStatus {
+  AVAILABLE
+  USED
+}
+
+enum VehicleType {
+  BICYCLE
+  MOTORCYCLE
+  CAR
+  EV
+}
+
+enum RentalType {
+  DAILY
+  MONTHLY
+}
+
+enum RentalStatus {
+  ACTIVE
+  COMPLETED
+}
+
+model User {
+  user_id             Int                @id @default(autoincrement())
+  national_id         String             @unique
+  full_name           String
+  phone_number        String
+  email               String             @unique
+  password            String
+  role                UserRole
+  verification_status VerificationStatus
+  created_at          DateTime           @default(now())
+  updated_at          DateTime           @onCreate(now()) @onUpdate(now())
+
+  vehicles            Vehicle[]          @relation("VehicleTenant")
+  rental_extensions   RentalExtension[]  @relation("RentalExtensionAdmin")
+}
+
+model Vehicle {
+  vehicle_id    Int         @id @default(autoincrement())
+  tenant_id     Int
+  type          VehicleType
+  license_plate String?     @unique
+  brand_model   String
+  battery_kwh   Float?
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @onCreate(now()) @onUpdate(now())
+
+  tenant        User        @relation("VehicleTenant", fields: [tenant_id], references: [user_id])
+  rentals       Rental[]
+}
+
+model Garage {
+  garage_code String       @id
+  type        GarageType
+  daily_rate  Float
+  kwh_rate    Float?
+  status      GarageStatus
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @onCreate(now()) @onUpdate(now())
+
+  rentals     Rental[]
+}
+
+model Rental {
+  rental_id         Int               @id @default(autoincrement())
+  garage_code       String
+  vehicle_id        Int
+  rental_type       RentalType
+  days_count        Int?
+  start_date        DateTime
+  end_date          DateTime
+  total_cost        Float
+  payment_proof_url String
+  status            RentalStatus
+
+  garage            Garage            @relation(fields: [garage_code], references: [garage_code])
+  vehicle           Vehicle           @relation(fields: [vehicle_id], references: [vehicle_id])
+  extensions        RentalExtension[]
+}
+
+model RentalExtension {
+  extension_id      Int      @id @default(autoincrement())
+  rental_id         Int
+  admin_id          Int
+  previous_end_date DateTime
+  new_end_date      DateTime
+  remaining_cost    Float
+  payment_proof_url String
+  created_at        DateTime @default(now())
+
+  rental            Rental   @relation(fields: [rental_id], references: [rental_id])
+  admin             User     @relation("RentalExtensionAdmin", fields: [admin_id], references: [user_id])
+}

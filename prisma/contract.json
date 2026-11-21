@@ -1,0 +1,1621 @@
+{
+  "schemaVersion": "1",
+  "targetFamily": "sql",
+  "target": "postgres",
+  "profileHash": "3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2",
+  "roots": {
+    "Garage": {
+      "model": "Garage",
+      "namespace": "public"
+    },
+    "Rental": {
+      "model": "Rental",
+      "namespace": "public"
+    },
+    "RentalExtension": {
+      "model": "RentalExtension",
+      "namespace": "public"
+    },
+    "User": {
+      "model": "User",
+      "namespace": "public"
+    },
+    "Vehicle": {
+      "model": "Vehicle",
+      "namespace": "public"
+    }
+  },
+  "domain": {
+    "namespaces": {
+      "public": {
+        "enum": {
+          "GarageStatus": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "AVAILABLE",
+                "value": "AVAILABLE"
+              },
+              {
+                "name": "USED",
+                "value": "USED"
+              }
+            ]
+          },
+          "GarageType": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "BICYCLE",
+                "value": "BICYCLE"
+              },
+              {
+                "name": "CAR",
+                "value": "CAR"
+              },
+              {
+                "name": "EV",
+                "value": "EV"
+              }
+            ]
+          },
+          "RentalStatus": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "ACTIVE",
+                "value": "ACTIVE"
+              },
+              {
+                "name": "COMPLETED",
+                "value": "COMPLETED"
+              }
+            ]
+          },
+          "RentalType": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "DAILY",
+                "value": "DAILY"
+              },
+              {
+                "name": "MONTHLY",
+                "value": "MONTHLY"
+              }
+            ]
+          },
+          "UserRole": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "ADMIN",
+                "value": "ADMIN"
+              },
+              {
+                "name": "TENANT",
+                "value": "TENANT"
+              }
+            ]
+          },
+          "VehicleType": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "BICYCLE",
+                "value": "BICYCLE"
+              },
+              {
+                "name": "MOTORCYCLE",
+                "value": "MOTORCYCLE"
+              },
+              {
+                "name": "CAR",
+                "value": "CAR"
+              },
+              {
+                "name": "EV",
+                "value": "EV"
+              }
+            ]
+          },
+          "VerificationStatus": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "PENDING",
+                "value": "PENDING"
+              },
+              {
+                "name": "ACCEPTED",
+                "value": "ACCEPTED"
+              },
+              {
+                "name": "REJECTED",
+                "value": "REJECTED"
+              }
+            ]
+          }
+        },
+        "models": {
+          "Garage": {
+            "fields": {
+              "created_at": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "daily_rate": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/float8@1",
+                  "kind": "scalar"
+                }
+              },
+              "garage_code": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "kwh_rate": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/float8@1",
+                  "kind": "scalar"
+                }
+              },
+              "status": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "GarageStatus",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "type": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "GarageType",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "updated_at": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              }
+            },
+            "relations": {
+              "rentals": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "garage_code"
+                  ],
+                  "targetFields": [
+                    "garage_code"
+                  ]
+                },
+                "to": {
+                  "model": "Rental",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "created_at": {
+                  "column": "created_at"
+                },
+                "daily_rate": {
+                  "column": "daily_rate"
+                },
+                "garage_code": {
+                  "column": "garage_code"
+                },
+                "kwh_rate": {
+                  "column": "kwh_rate"
+                },
+                "status": {
+                  "column": "status"
+                },
+                "type": {
+                  "column": "type"
+                },
+                "updated_at": {
+                  "column": "updated_at"
+                }
+              },
+              "namespaceId": "public",
+              "table": "Garage"
+            }
+          },
+          "Rental": {
+            "fields": {
+              "days_count": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "end_date": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "garage_code": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "payment_proof_url": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "rental_id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "rental_type": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "RentalType",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "start_date": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "status": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "RentalStatus",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "total_cost": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/float8@1",
+                  "kind": "scalar"
+                }
+              },
+              "vehicle_id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "extensions": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "rental_id"
+                  ],
+                  "targetFields": [
+                    "rental_id"
+                  ]
+                },
+                "to": {
+                  "model": "RentalExtension",
+                  "namespace": "public"
+                }
+              },
+              "garage": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "garage_code"
+                  ],
+                  "targetFields": [
+                    "garage_code"
+                  ]
+                },
+                "to": {
+                  "model": "Garage",
+                  "namespace": "public"
+                }
+              },
+              "vehicle": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "vehicle_id"
+                  ],
+                  "targetFields": [
+                    "vehicle_id"
+                  ]
+                },
+                "to": {
+                  "model": "Vehicle",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "days_count": {
+                  "column": "days_count"
+                },
+                "end_date": {
+                  "column": "end_date"
+                },
+                "garage_code": {
+                  "column": "garage_code"
+                },
+                "payment_proof_url": {
+                  "column": "payment_proof_url"
+                },
+                "rental_id": {
+                  "column": "rental_id"
+                },
+                "rental_type": {
+                  "column": "rental_type"
+                },
+                "start_date": {
+                  "column": "start_date"
+                },
+                "status": {
+                  "column": "status"
+                },
+                "total_cost": {
+                  "column": "total_cost"
+                },
+                "vehicle_id": {
+                  "column": "vehicle_id"
+                }
+              },
+              "namespaceId": "public",
+              "table": "Rental"
+            }
+          },
+          "RentalExtension": {
+            "fields": {
+              "admin_id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "created_at": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "extension_id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "new_end_date": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "payment_proof_url": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "previous_end_date": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "remaining_cost": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/float8@1",
+                  "kind": "scalar"
+                }
+              },
+              "rental_id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "admin": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "admin_id"
+                  ],
+                  "targetFields": [
+                    "user_id"
+                  ]
+                },
+                "to": {
+                  "model": "User",
+                  "namespace": "public"
+                }
+              },
+              "rental": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "rental_id"
+                  ],
+                  "targetFields": [
+                    "rental_id"
+                  ]
+                },
+                "to": {
+                  "model": "Rental",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "admin_id": {
+                  "column": "admin_id"
+                },
+                "created_at": {
+                  "column": "created_at"
+                },
+                "extension_id": {
+                  "column": "extension_id"
+                },
+                "new_end_date": {
+                  "column": "new_end_date"
+                },
+                "payment_proof_url": {
+                  "column": "payment_proof_url"
+                },
+                "previous_end_date": {
+                  "column": "previous_end_date"
+                },
+                "remaining_cost": {
+                  "column": "remaining_cost"
+                },
+                "rental_id": {
+                  "column": "rental_id"
+                }
+              },
+              "namespaceId": "public",
+              "table": "RentalExtension"
+            }
+          },
+          "User": {
+            "fields": {
+              "created_at": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "email": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "full_name": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "national_id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "password": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "phone_number": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "role": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "UserRole",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "updated_at": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "user_id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "verification_status": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "VerificationStatus",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              }
+            },
+            "relations": {
+              "rental_extensions": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "user_id"
+                  ],
+                  "targetFields": [
+                    "admin_id"
+                  ]
+                },
+                "to": {
+                  "model": "RentalExtension",
+                  "namespace": "public"
+                }
+              },
+              "vehicles": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "user_id"
+                  ],
+                  "targetFields": [
+                    "tenant_id"
+                  ]
+                },
+                "to": {
+                  "model": "Vehicle",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "created_at": {
+                  "column": "created_at"
+                },
+                "email": {
+                  "column": "email"
+                },
+                "full_name": {
+                  "column": "full_name"
+                },
+                "national_id": {
+                  "column": "national_id"
+                },
+                "password": {
+                  "column": "password"
+                },
+                "phone_number": {
+                  "column": "phone_number"
+                },
+                "role": {
+                  "column": "role"
+                },
+                "updated_at": {
+                  "column": "updated_at"
+                },
+                "user_id": {
+                  "column": "user_id"
+                },
+                "verification_status": {
+                  "column": "verification_status"
+                }
+              },
+              "namespaceId": "public",
+              "table": "User"
+            }
+          },
+          "Vehicle": {
+            "fields": {
+              "battery_kwh": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/float8@1",
+                  "kind": "scalar"
+                }
+              },
+              "brand_model": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "created_at": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "license_plate": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "tenant_id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "type": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "VehicleType",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "updated_at": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "vehicle_id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "rentals": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "vehicle_id"
+                  ],
+                  "targetFields": [
+                    "vehicle_id"
+                  ]
+                },
+                "to": {
+                  "model": "Rental",
+                  "namespace": "public"
+                }
+              },
+              "tenant": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "tenant_id"
+                  ],
+                  "targetFields": [
+                    "user_id"
+                  ]
+                },
+                "to": {
+                  "model": "User",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "battery_kwh": {
+                  "column": "battery_kwh"
+                },
+                "brand_model": {
+                  "column": "brand_model"
+                },
+                "created_at": {
+                  "column": "created_at"
+                },
+                "license_plate": {
+                  "column": "license_plate"
+                },
+                "tenant_id": {
+                  "column": "tenant_id"
+                },
+                "type": {
+                  "column": "type"
+                },
+                "updated_at": {
+                  "column": "updated_at"
+                },
+                "vehicle_id": {
+                  "column": "vehicle_id"
+                }
+              },
+              "namespaceId": "public",
+              "table": "Vehicle"
+            }
+          }
+        }
+      }
+    }
+  },
+  "storage": {
+    "namespaces": {
+      "public": {
+        "entries": {
+          "table": {
+            "Garage": {
+              "checks": [
+                {
+                  "expression": "\"status\" IN ('AVAILABLE', 'USED')",
+                  "name": "Garage_status_check_d239648e",
+                  "prefix": "Garage_status_check"
+                },
+                {
+                  "expression": "\"type\" IN ('BICYCLE', 'CAR', 'EV')",
+                  "name": "Garage_type_check_bdcd1783",
+                  "prefix": "Garage_type_check"
+                }
+              ],
+              "columns": {
+                "created_at": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "daily_rate": {
+                  "codecId": "pg/float8@1",
+                  "dataType": "pg/float8",
+                  "nullable": false
+                },
+                "garage_code": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "kwh_rate": {
+                  "codecId": "pg/float8@1",
+                  "dataType": "pg/float8",
+                  "nullable": true
+                },
+                "status": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "GarageStatus",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "type": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "GarageType",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "updated_at": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "garage_code"
+                ]
+              },
+              "uniques": []
+            },
+            "Rental": {
+              "checks": [
+                {
+                  "expression": "\"rental_type\" IN ('DAILY', 'MONTHLY')",
+                  "name": "Rental_rental_type_check_a6acda2b",
+                  "prefix": "Rental_rental_type_check"
+                },
+                {
+                  "expression": "\"status\" IN ('ACTIVE', 'COMPLETED')",
+                  "name": "Rental_status_check_0a2783e1",
+                  "prefix": "Rental_status_check"
+                }
+              ],
+              "columns": {
+                "days_count": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": true
+                },
+                "end_date": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "garage_code": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "payment_proof_url": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "rental_id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nullable": false
+                },
+                "rental_type": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "RentalType",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "start_date": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "status": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "RentalStatus",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "total_cost": {
+                  "codecId": "pg/float8@1",
+                  "dataType": "pg/float8",
+                  "nullable": false
+                },
+                "vehicle_id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "Rental_garage_code_idx_49121155"
+                  },
+                  "source": {
+                    "columns": [
+                      "garage_code"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Rental"
+                  },
+                  "target": {
+                    "columns": [
+                      "garage_code"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Garage"
+                  }
+                },
+                {
+                  "index": {
+                    "name": "Rental_vehicle_id_idx_fbbcb34b"
+                  },
+                  "source": {
+                    "columns": [
+                      "vehicle_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Rental"
+                  },
+                  "target": {
+                    "columns": [
+                      "vehicle_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Vehicle"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "garage_code"
+                  ],
+                  "name": "Rental_garage_code_idx_49121155",
+                  "prefix": "Rental_garage_code_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "vehicle_id"
+                  ],
+                  "name": "Rental_vehicle_id_idx_fbbcb34b",
+                  "prefix": "Rental_vehicle_id_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "rental_id"
+                ]
+              },
+              "uniques": []
+            },
+            "RentalExtension": {
+              "columns": {
+                "admin_id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                },
+                "created_at": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "extension_id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nullable": false
+                },
+                "new_end_date": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "payment_proof_url": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "previous_end_date": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "remaining_cost": {
+                  "codecId": "pg/float8@1",
+                  "dataType": "pg/float8",
+                  "nullable": false
+                },
+                "rental_id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "RentalExtension_rental_id_idx_1429c479"
+                  },
+                  "source": {
+                    "columns": [
+                      "rental_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RentalExtension"
+                  },
+                  "target": {
+                    "columns": [
+                      "rental_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Rental"
+                  }
+                },
+                {
+                  "index": {
+                    "name": "RentalExtension_admin_id_idx_78cc3551"
+                  },
+                  "source": {
+                    "columns": [
+                      "admin_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RentalExtension"
+                  },
+                  "target": {
+                    "columns": [
+                      "user_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "User"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "admin_id"
+                  ],
+                  "name": "RentalExtension_admin_id_idx_78cc3551",
+                  "prefix": "RentalExtension_admin_id_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "rental_id"
+                  ],
+                  "name": "RentalExtension_rental_id_idx_1429c479",
+                  "prefix": "RentalExtension_rental_id_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "extension_id"
+                ]
+              },
+              "uniques": []
+            },
+            "User": {
+              "checks": [
+                {
+                  "expression": "\"role\" IN ('ADMIN', 'TENANT')",
+                  "name": "User_role_check_b56b1992",
+                  "prefix": "User_role_check"
+                },
+                {
+                  "expression": "\"verification_status\" IN ('PENDING', 'ACCEPTED', 'REJECTED')",
+                  "name": "User_verification_status_check_bb09dd42",
+                  "prefix": "User_verification_status_check"
+                }
+              ],
+              "columns": {
+                "created_at": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "email": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "full_name": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "national_id": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "password": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "phone_number": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "role": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "UserRole",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "updated_at": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "user_id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nullable": false
+                },
+                "verification_status": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "VerificationStatus",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "user_id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "national_id"
+                  ]
+                },
+                {
+                  "columns": [
+                    "email"
+                  ]
+                }
+              ]
+            },
+            "Vehicle": {
+              "checks": [
+                {
+                  "expression": "\"type\" IN ('BICYCLE', 'MOTORCYCLE', 'CAR', 'EV')",
+                  "name": "Vehicle_type_check_593c08a5",
+                  "prefix": "Vehicle_type_check"
+                }
+              ],
+              "columns": {
+                "battery_kwh": {
+                  "codecId": "pg/float8@1",
+                  "dataType": "pg/float8",
+                  "nullable": true
+                },
+                "brand_model": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "created_at": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "license_plate": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
+                "tenant_id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                },
+                "type": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "VehicleType",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "updated_at": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "vehicle_id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "Vehicle_tenant_id_idx_41c0d441"
+                  },
+                  "source": {
+                    "columns": [
+                      "tenant_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Vehicle"
+                  },
+                  "target": {
+                    "columns": [
+                      "user_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "User"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "tenant_id"
+                  ],
+                  "name": "Vehicle_tenant_id_idx_41c0d441",
+                  "prefix": "Vehicle_tenant_id_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "vehicle_id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "license_plate"
+                  ]
+                }
+              ]
+            }
+          },
+          "valueSet": {
+            "GarageStatus": {
+              "kind": "valueSet",
+              "values": [
+                "AVAILABLE",
+                "USED"
+              ]
+            },
+            "GarageType": {
+              "kind": "valueSet",
+              "values": [
+                "BICYCLE",
+                "CAR",
+                "EV"
+              ]
+            },
+            "RentalStatus": {
+              "kind": "valueSet",
+              "values": [
+                "ACTIVE",
+                "COMPLETED"
+              ]
+            },
+            "RentalType": {
+              "kind": "valueSet",
+              "values": [
+                "DAILY",
+                "MONTHLY"
+              ]
+            },
+            "UserRole": {
+              "kind": "valueSet",
+              "values": [
+                "ADMIN",
+                "TENANT"
+              ]
+            },
+            "VehicleType": {
+              "kind": "valueSet",
+              "values": [
+                "BICYCLE",
+                "MOTORCYCLE",
+                "CAR",
+                "EV"
+              ]
+            },
+            "VerificationStatus": {
+              "kind": "valueSet",
+              "values": [
+                "PENDING",
+                "ACCEPTED",
+                "REJECTED"
+              ]
+            }
+          }
+        },
+        "id": "public",
+        "kind": "postgres-schema"
+      }
+    },
+    "storageHash": "4ea9647a195e46c3e045e6f6e8eff6e738ac12bd60bfd0d261472a6461be7f62"
+  },
+  "execution": {
+    "executionHash": "08d1c643420ae2c89e97a060dd62bc744bd63331f04cbd573a0045243439a660",
+    "mutations": {
+      "defaults": [
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "Garage",
+            "field": "updated_at",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "User",
+            "field": "updated_at",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "Vehicle",
+            "field": "updated_at",
+            "namespace": "public"
+          }
+        }
+      ]
+    }
+  },
+  "capabilities": {
+    "postgres": {
+      "distinctOn": true,
+      "forKeyShare": true,
+      "forNoKeyUpdate": true,
+      "jsonAgg": true,
+      "lateral": true,
+      "limit": true,
+      "orderBy": true,
+      "returning": true
+    },
+    "sql": {
+      "checkConstraint": true,
+      "defaultInInsert": true,
+      "enums": true,
+      "forShare": true,
+      "forUpdate": true,
+      "insertOnConflictSkip": true,
+      "insertOnConflictTarget": true,
+      "insertOnConflictWithoutTarget": true,
+      "lateral": true,
+      "lockNowait": true,
+      "lockOf": true,
+      "lockSkipLocked": true,
+      "returning": true,
+      "scalarList": true
+    }
+  },
+  "extensions": {},
+  "meta": {},
+  "_generated": {
+    "warning": "⚠️  GENERATED FILE - DO NOT EDIT",
+    "message": "This file is automatically generated by \"prisma contract emit\".",
+    "regenerate": "To regenerate, run: prisma contract emit"
+  }
+}

@@ -1,0 +1,908 @@
+[
+  {
+    "id": "schema.public",
+    "label": "Create schema \"public\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "Create schema \"public\"",
+        "sql": "CREATE SCHEMA IF NOT EXISTS \"public\"",
+        "params": []
+      }
+    ],
+    "postcheck": []
+  },
+  {
+    "id": "table.Garage",
+    "label": "Create table \"Garage\"",
+    "summary": "Creates table \"Garage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Garage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Garage\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Garage\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"Garage\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Garage\"",
+        "sql": "CREATE TABLE \"public\".\"Garage\" (\n  \"created_at\" timestamptz(3) DEFAULT (now()) NOT NULL,\n  \"daily_rate\" float8 NOT NULL,\n  \"garage_code\" text NOT NULL,\n  \"kwh_rate\" float8,\n  \"status\" text NOT NULL,\n  \"type\" text NOT NULL,\n  \"updated_at\" timestamptz(3) NOT NULL,\n  PRIMARY KEY (\"garage_code\"),\n  CONSTRAINT \"Garage_status_check_d239648e\" CHECK (\"status\" IN ('AVAILABLE', 'USED')),\n  CONSTRAINT \"Garage_type_check_bdcd1783\" CHECK (\"type\" IN ('BICYCLE', 'CAR', 'EV'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Garage\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"Garage\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"Garage\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.Rental",
+    "label": "Create table \"Rental\"",
+    "summary": "Creates table \"Rental\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Rental"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Rental\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Rental\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"Rental\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Rental\"",
+        "sql": "CREATE TABLE \"public\".\"Rental\" (\n  \"days_count\" int4,\n  \"end_date\" timestamptz(3) NOT NULL,\n  \"garage_code\" text NOT NULL,\n  \"payment_proof_url\" text NOT NULL,\n  \"rental_id\" SERIAL NOT NULL,\n  \"rental_type\" text NOT NULL,\n  \"start_date\" timestamptz(3) NOT NULL,\n  \"status\" text NOT NULL,\n  \"total_cost\" float8 NOT NULL,\n  \"vehicle_id\" int4 NOT NULL,\n  PRIMARY KEY (\"rental_id\"),\n  CONSTRAINT \"Rental_rental_type_check_a6acda2b\" CHECK (\"rental_type\" IN ('DAILY', 'MONTHLY')),\n  CONSTRAINT \"Rental_status_check_0a2783e1\" CHECK (\"status\" IN ('ACTIVE', 'COMPLETED'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Rental\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"Rental\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"Rental\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.RentalExtension",
+    "label": "Create table \"RentalExtension\"",
+    "summary": "Creates table \"RentalExtension\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "RentalExtension"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"RentalExtension\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"RentalExtension\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"RentalExtension\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"RentalExtension\"",
+        "sql": "CREATE TABLE \"public\".\"RentalExtension\" (\n  \"admin_id\" int4 NOT NULL,\n  \"created_at\" timestamptz(3) DEFAULT (now()) NOT NULL,\n  \"extension_id\" SERIAL NOT NULL,\n  \"new_end_date\" timestamptz(3) NOT NULL,\n  \"payment_proof_url\" text NOT NULL,\n  \"previous_end_date\" timestamptz(3) NOT NULL,\n  \"remaining_cost\" float8 NOT NULL,\n  \"rental_id\" int4 NOT NULL,\n  PRIMARY KEY (\"extension_id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"RentalExtension\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"RentalExtension\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"RentalExtension\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.User",
+    "label": "Create table \"User\"",
+    "summary": "Creates table \"User\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "User"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"User\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"User\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"User\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"User\"",
+        "sql": "CREATE TABLE \"public\".\"User\" (\n  \"created_at\" timestamptz(3) DEFAULT (now()) NOT NULL,\n  \"email\" text NOT NULL,\n  \"full_name\" text NOT NULL,\n  \"national_id\" text NOT NULL,\n  \"password\" text NOT NULL,\n  \"phone_number\" text NOT NULL,\n  \"role\" text NOT NULL,\n  \"updated_at\" timestamptz(3) NOT NULL,\n  \"user_id\" SERIAL NOT NULL,\n  \"verification_status\" text NOT NULL,\n  PRIMARY KEY (\"user_id\"),\n  CONSTRAINT \"User_role_check_b56b1992\" CHECK (\"role\" IN ('ADMIN', 'TENANT')),\n  CONSTRAINT \"User_verification_status_check_bb09dd42\" CHECK (\"verification_status\" IN ('PENDING', 'ACCEPTED', 'REJECTED'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"User\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"User\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"User\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.Vehicle",
+    "label": "Create table \"Vehicle\"",
+    "summary": "Creates table \"Vehicle\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Vehicle"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Vehicle\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Vehicle\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"Vehicle\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Vehicle\"",
+        "sql": "CREATE TABLE \"public\".\"Vehicle\" (\n  \"battery_kwh\" float8,\n  \"brand_model\" text NOT NULL,\n  \"created_at\" timestamptz(3) DEFAULT (now()) NOT NULL,\n  \"license_plate\" text,\n  \"tenant_id\" int4 NOT NULL,\n  \"type\" text NOT NULL,\n  \"updated_at\" timestamptz(3) NOT NULL,\n  \"vehicle_id\" SERIAL NOT NULL,\n  PRIMARY KEY (\"vehicle_id\"),\n  CONSTRAINT \"Vehicle_type_check_593c08a5\" CHECK (\"type\" IN ('BICYCLE', 'MOTORCYCLE', 'CAR', 'EV'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Vehicle\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"Vehicle\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"Vehicle\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "unique.User.User_national_id_key",
+    "label": "Add unique constraint on \"User\" (national_id)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "User_national_id_key",
+        "table": "User"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"User_national_id_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "User_national_id_key",
+          "public",
+          "\"public\".\"User\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"User_national_id_key\" on \"User\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"User_national_id_key\"",
+        "sql": "ALTER TABLE \"public\".\"User\" ADD CONSTRAINT \"User_national_id_key\" UNIQUE (\"national_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify unique constraint \"User_national_id_key\" exists on (national_id)",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb)) AS \"result\"",
+        "params": [
+          "User_national_id_key",
+          "public",
+          "\"public\".\"User\"",
+          "u",
+          "[\"national_id\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.User.User_email_key",
+    "label": "Add unique constraint on \"User\" (email)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "User_email_key",
+        "table": "User"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"User_email_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "User_email_key",
+          "public",
+          "\"public\".\"User\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"User_email_key\" on \"User\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"User_email_key\"",
+        "sql": "ALTER TABLE \"public\".\"User\" ADD CONSTRAINT \"User_email_key\" UNIQUE (\"email\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify unique constraint \"User_email_key\" exists on (email)",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb)) AS \"result\"",
+        "params": [
+          "User_email_key",
+          "public",
+          "\"public\".\"User\"",
+          "u",
+          "[\"email\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Vehicle.Vehicle_license_plate_key",
+    "label": "Add unique constraint on \"Vehicle\" (license_plate)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Vehicle_license_plate_key",
+        "table": "Vehicle"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Vehicle_license_plate_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Vehicle_license_plate_key",
+          "public",
+          "\"public\".\"Vehicle\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"Vehicle_license_plate_key\" on \"Vehicle\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Vehicle_license_plate_key\"",
+        "sql": "ALTER TABLE \"public\".\"Vehicle\" ADD CONSTRAINT \"Vehicle_license_plate_key\" UNIQUE (\"license_plate\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify unique constraint \"Vehicle_license_plate_key\" exists on (license_plate)",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb)) AS \"result\"",
+        "params": [
+          "Vehicle_license_plate_key",
+          "public",
+          "\"public\".\"Vehicle\"",
+          "u",
+          "[\"license_plate\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Rental.Rental_garage_code_idx_49121155",
+    "label": "Create index \"Rental_garage_code_idx_49121155\" on \"Rental\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Rental_garage_code_idx_49121155",
+        "table": "Rental"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Rental_garage_code_idx_49121155\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Rental_garage_code_idx_49121155\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"Rental_garage_code_idx_49121155\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Rental_garage_code_idx_49121155\"",
+        "sql": "CREATE INDEX \"Rental_garage_code_idx_49121155\" ON \"public\".\"Rental\" (\"garage_code\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Rental_garage_code_idx_49121155\" exists on \"Rental\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"Rental_garage_code_idx_49121155\"",
+          "i",
+          "I",
+          "\"public\".\"Rental\"",
+          "btree",
+          "[\"garage_code\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Rental.Rental_vehicle_id_idx_fbbcb34b",
+    "label": "Create index \"Rental_vehicle_id_idx_fbbcb34b\" on \"Rental\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Rental_vehicle_id_idx_fbbcb34b",
+        "table": "Rental"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Rental_vehicle_id_idx_fbbcb34b\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Rental_vehicle_id_idx_fbbcb34b\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"Rental_vehicle_id_idx_fbbcb34b\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Rental_vehicle_id_idx_fbbcb34b\"",
+        "sql": "CREATE INDEX \"Rental_vehicle_id_idx_fbbcb34b\" ON \"public\".\"Rental\" (\"vehicle_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Rental_vehicle_id_idx_fbbcb34b\" exists on \"Rental\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"Rental_vehicle_id_idx_fbbcb34b\"",
+          "i",
+          "I",
+          "\"public\".\"Rental\"",
+          "btree",
+          "[\"vehicle_id\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.RentalExtension.RentalExtension_admin_id_idx_78cc3551",
+    "label": "Create index \"RentalExtension_admin_id_idx_78cc3551\" on \"RentalExtension\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "RentalExtension_admin_id_idx_78cc3551",
+        "table": "RentalExtension"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"RentalExtension_admin_id_idx_78cc3551\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"RentalExtension_admin_id_idx_78cc3551\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"RentalExtension_admin_id_idx_78cc3551\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"RentalExtension_admin_id_idx_78cc3551\"",
+        "sql": "CREATE INDEX \"RentalExtension_admin_id_idx_78cc3551\" ON \"public\".\"RentalExtension\" (\"admin_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"RentalExtension_admin_id_idx_78cc3551\" exists on \"RentalExtension\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"RentalExtension_admin_id_idx_78cc3551\"",
+          "i",
+          "I",
+          "\"public\".\"RentalExtension\"",
+          "btree",
+          "[\"admin_id\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.RentalExtension.RentalExtension_rental_id_idx_1429c479",
+    "label": "Create index \"RentalExtension_rental_id_idx_1429c479\" on \"RentalExtension\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "RentalExtension_rental_id_idx_1429c479",
+        "table": "RentalExtension"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"RentalExtension_rental_id_idx_1429c479\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"RentalExtension_rental_id_idx_1429c479\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"RentalExtension_rental_id_idx_1429c479\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"RentalExtension_rental_id_idx_1429c479\"",
+        "sql": "CREATE INDEX \"RentalExtension_rental_id_idx_1429c479\" ON \"public\".\"RentalExtension\" (\"rental_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"RentalExtension_rental_id_idx_1429c479\" exists on \"RentalExtension\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"RentalExtension_rental_id_idx_1429c479\"",
+          "i",
+          "I",
+          "\"public\".\"RentalExtension\"",
+          "btree",
+          "[\"rental_id\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Vehicle.Vehicle_tenant_id_idx_41c0d441",
+    "label": "Create index \"Vehicle_tenant_id_idx_41c0d441\" on \"Vehicle\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Vehicle_tenant_id_idx_41c0d441",
+        "table": "Vehicle"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Vehicle_tenant_id_idx_41c0d441\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Vehicle_tenant_id_idx_41c0d441\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"Vehicle_tenant_id_idx_41c0d441\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Vehicle_tenant_id_idx_41c0d441\"",
+        "sql": "CREATE INDEX \"Vehicle_tenant_id_idx_41c0d441\" ON \"public\".\"Vehicle\" (\"tenant_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Vehicle_tenant_id_idx_41c0d441\" exists on \"Vehicle\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"Vehicle_tenant_id_idx_41c0d441\"",
+          "i",
+          "I",
+          "\"public\".\"Vehicle\"",
+          "btree",
+          "[\"tenant_id\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Rental.Rental_garage_code_fkey",
+    "label": "Add foreign key \"Rental_garage_code_fkey\" on \"Rental\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Rental_garage_code_fkey",
+        "table": "Rental"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Rental_garage_code_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Rental_garage_code_fkey",
+          "public",
+          "\"public\".\"Rental\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"Rental_garage_code_fkey\" on \"Rental\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Rental_garage_code_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Rental\"\nADD CONSTRAINT \"Rental_garage_code_fkey\"\nFOREIGN KEY (\"garage_code\")\nREFERENCES \"public\".\"Garage\" (\"garage_code\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Rental_garage_code_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "Rental_garage_code_fkey",
+          "public",
+          "\"public\".\"Rental\"",
+          "f",
+          "[\"garage_code\"]",
+          "\"public\".\"Garage\"",
+          "[\"garage_code\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Rental.Rental_vehicle_id_fkey",
+    "label": "Add foreign key \"Rental_vehicle_id_fkey\" on \"Rental\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Rental_vehicle_id_fkey",
+        "table": "Rental"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Rental_vehicle_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Rental_vehicle_id_fkey",
+          "public",
+          "\"public\".\"Rental\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"Rental_vehicle_id_fkey\" on \"Rental\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Rental_vehicle_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Rental\"\nADD CONSTRAINT \"Rental_vehicle_id_fkey\"\nFOREIGN KEY (\"vehicle_id\")\nREFERENCES \"public\".\"Vehicle\" (\"vehicle_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Rental_vehicle_id_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "Rental_vehicle_id_fkey",
+          "public",
+          "\"public\".\"Rental\"",
+          "f",
+          "[\"vehicle_id\"]",
+          "\"public\".\"Vehicle\"",
+          "[\"vehicle_id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.RentalExtension.RentalExtension_rental_id_fkey",
+    "label": "Add foreign key \"RentalExtension_rental_id_fkey\" on \"RentalExtension\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "RentalExtension_rental_id_fkey",
+        "table": "RentalExtension"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"RentalExtension_rental_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "RentalExtension_rental_id_fkey",
+          "public",
+          "\"public\".\"RentalExtension\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"RentalExtension_rental_id_fkey\" on \"RentalExtension\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"RentalExtension_rental_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"RentalExtension\"\nADD CONSTRAINT \"RentalExtension_rental_id_fkey\"\nFOREIGN KEY (\"rental_id\")\nREFERENCES \"public\".\"Rental\" (\"rental_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"RentalExtension_rental_id_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "RentalExtension_rental_id_fkey",
+          "public",
+          "\"public\".\"RentalExtension\"",
+          "f",
+          "[\"rental_id\"]",
+          "\"public\".\"Rental\"",
+          "[\"rental_id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.RentalExtension.RentalExtension_admin_id_fkey",
+    "label": "Add foreign key \"RentalExtension_admin_id_fkey\" on \"RentalExtension\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "RentalExtension_admin_id_fkey",
+        "table": "RentalExtension"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"RentalExtension_admin_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "RentalExtension_admin_id_fkey",
+          "public",
+          "\"public\".\"RentalExtension\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"RentalExtension_admin_id_fkey\" on \"RentalExtension\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"RentalExtension_admin_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"RentalExtension\"\nADD CONSTRAINT \"RentalExtension_admin_id_fkey\"\nFOREIGN KEY (\"admin_id\")\nREFERENCES \"public\".\"User\" (\"user_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"RentalExtension_admin_id_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "RentalExtension_admin_id_fkey",
+          "public",
+          "\"public\".\"RentalExtension\"",
+          "f",
+          "[\"admin_id\"]",
+          "\"public\".\"User\"",
+          "[\"user_id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Vehicle.Vehicle_tenant_id_fkey",
+    "label": "Add foreign key \"Vehicle_tenant_id_fkey\" on \"Vehicle\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Vehicle_tenant_id_fkey",
+        "table": "Vehicle"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Vehicle_tenant_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Vehicle_tenant_id_fkey",
+          "public",
+          "\"public\".\"Vehicle\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"Vehicle_tenant_id_fkey\" on \"Vehicle\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Vehicle_tenant_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Vehicle\"\nADD CONSTRAINT \"Vehicle_tenant_id_fkey\"\nFOREIGN KEY (\"tenant_id\")\nREFERENCES \"public\".\"User\" (\"user_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Vehicle_tenant_id_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "Vehicle_tenant_id_fkey",
+          "public",
+          "\"public\".\"Vehicle\"",
+          "f",
+          "[\"tenant_id\"]",
+          "\"public\".\"User\"",
+          "[\"user_id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  }
+]
