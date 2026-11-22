@@ -34,7 +34,7 @@ export function BatchCreateGarageDialog({
 }) {
   const [open, setOpen] = useState(false);
   const [type, setType] = useState<GarageType>('CAR');
-  const [quantity, setQuantity] = useState<number>(5);
+  const [quantity, setQuantity] = useState<string>('5');
   const [dailyRate, setDailyRate] = useState<string>('50000');
   const [kwhRate, setKwhRate] = useState<string>('2500');
 
@@ -43,7 +43,7 @@ export function BatchCreateGarageDialog({
     INITIAL_STATE,
   );
 
-  const preview = useBatchGaragePreview(type, quantity, maxSequenceByType);
+  const preview = useBatchGaragePreview(type, Number(quantity) || 0, maxSequenceByType);
 
   useEffect(() => {
     if (state.success) {
@@ -109,7 +109,7 @@ export function BatchCreateGarageDialog({
                 max={999}
                 required
                 value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value) || 0)}
+                onChange={(e) => setQuantity(e.target.value)}
                 className="font-mono"
               />
               {state.fieldErrors?.quantity ? (
@@ -183,7 +183,7 @@ export function BatchCreateGarageDialog({
             <SubmitButton
               pending={isPending}
               pendingLabel="Generating..."
-              disabled={preview.exceedsCapacity || quantity < 1}
+              disabled={preview.exceedsCapacity || (Number(quantity) || 0) < 1}
             >
               Generate Bays
             </SubmitButton>
